@@ -2,6 +2,8 @@
 
 專為**中文母語者**設計的互動式課程集合。純靜態網站，部署在 Cloudflare Workers。
 
+**線上版本：<https://ai-learning-hub.kimfull.workers.dev>**
+
 ## 目前的課程
 
 | 課程 | 內容 | 狀態 |
