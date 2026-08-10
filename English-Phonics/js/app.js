@@ -9,6 +9,7 @@
   var appTitle= document.getElementById('appTitle');
   var btnBack = document.getElementById('btnBack');
   var btnTheme= document.getElementById('btnTheme');
+  var btnSet  = document.getElementById('btnSettings');
   var tabbar  = document.getElementById('tabbar');
   var toastEl = document.getElementById('toast');
 
@@ -58,6 +59,13 @@
     else go('home', null, true);
   }
   btnBack.onclick = back;
+  /* 設定要全域可達：語音選錯的話，第一課的聽辨練習就毀了，
+     不能只擺在「進度」頁裡面（那頁在還沒診斷前根本不會渲染到底） */
+  btnSet.onclick = function () {
+    var cur = stack[stack.length - 1];
+    if (cur && cur.route === 'settings') { back(); return; }
+    go('settings');
+  };
 
   tabbar.addEventListener('click', function (e) {
     var b = e.target.closest('[data-route]');
@@ -759,6 +767,11 @@
       var b0 = el('button', 'btn btn--primary btn--block', '去做診斷');
       b0.onclick = function () { go('diagnose'); };
       view.appendChild(b0);
+      /* 診斷前更需要調語音——這裡也要留設定入口 */
+      var b0s = el('button', 'btn btn--ghost btn--block', '⚙️ 設定與資料');
+      b0s.style.marginTop = '10px';
+      b0s.onclick = function () { go('settings'); };
+      view.appendChild(b0s);
       return;
     }
 

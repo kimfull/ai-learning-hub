@@ -146,9 +146,11 @@ a.course:active { transform: scale(.99); }
 /* ---------- Foot ---------- */
 .foot {
   margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line);
-  color: var(--text-2); font-size: 14.5px; text-align: center;
+  color: var(--text-2); font-size: 15px; line-height: 1.65;
 }
-.foot p { margin: 0; }
+.foot p { margin: 0 0 12px; }
+.foot p:last-child { margin-bottom: 0; }
+.foot b { color: var(--text); font-weight: 600; }
 
 @media (min-width: 640px) {
   body { font-size: 18px; }
