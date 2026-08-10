@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+<meta name="theme-color" content="#f5f5f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+<meta name="description" content="AI 學習中心：專為中文母語者設計的互動式課程。">
+<title>AI 學習中心</title>
+<link rel="stylesheet" href="css/hub.css?v=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar__t">AI 學習中心</div>
+  <button class="bar__act" id="btnTheme" aria-label="切換深淺色">◐</button>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <h1>挑一門課，開始練。</h1>
+    <p class="lede">每一門課都是<b>互動式</b>的——不是看影片、不是讀講義，而是一題一題做，
+      做錯了會告訴你錯在哪一環。所有課程都針對<b>中文母語者</b>的難點設計。</p>
+  </section>
+
+  <section id="courses"></section>
+
+  <section class="note">
+    <h2>這些課有什麼不一樣</h2>
+    <div class="grid">
+      <div class="cell">
+        <div class="cell__h">診斷先於教學</div>
+        <p>先量出你哪一層有洞，再決定從哪裡開始。不從頭教起，也不讓你跳過會塌的地方。</p>
+      </div>
+      <div class="cell">
+        <div class="cell__h">錯了會歸因</div>
+        <p>不只告訴你答案。系統會判斷是聽力、規則、記憶還是動作出問題，再給對應的補強。</p>
+      </div>
+      <div class="cell">
+        <div class="cell__h">間隔複習</div>
+        <p>答對的往後排，答錯的拉回來。你只會花時間在還不熟的東西上。</p>
+      </div>
+      <div class="cell">
+        <div class="cell__h">用能力驗收</div>
+        <p>通過標準不是「上完所有課」，而是用沒看過的題目證明你真的會了。</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>學習紀錄只存在你這台裝置的瀏覽器裡，不會上傳。<br>
+      換裝置前記得到課程的「設定」頁匯出備份。</p>
+  </footer>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- 課程清單。之後加新課只要在這裡加一筆 ---------- */
+  var COURSES = [
+    {
+      id: 'english-phonics',
+      icon: '🔤',
+      title: 'English Phonics 拼讀教室',
+      tagline: '見字能讀、聽音能寫',
+      desc: '從 44 個音素到多音節解碼，11 個 Level、56 課。' +
+            '專門處理中文母語者的破口：分不出的短母音、做不出的 /θ/ /v/ /z/、被吃掉的字尾子音。',
+      href: 'English-Phonics/',
+      status: 'ready',
+      meta: ['11 個 Level', '56 課', '約 12 週'],
+      /* 進度從課程自己的 localStorage 讀（同一個網域，讀得到） */
+      progressKey: 'phonics.state.v1',
+      readProgress: function (state) {
+        var TOTAL = 56;
+        var done = Object.keys(state.lessons || {}).filter(function (k) {
+          return state.lessons[k].status === 'done';
+        }).length;
+        var placed = state.diagnosis ? state.diagnosis.placement : null;
+        return {
+          started: !!state.diagnosis,
+          pct: Math.round(done / TOTAL * 100),
+          label: !state.diagnosis
+            ? '尚未做初始診斷'
+            : '已完成 ' + done + '/' + TOTAL + ' 課 · 起點 Level ' + placed
+        };
+      }
+    }
+  ];
+
+  /* ---------- 主題 ---------- */
+  var t = null;
+  try { t = localStorage.getItem('hub.theme') || localStorage.getItem('phonics.theme'); } catch (e) {}
+  if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('btnTheme').onclick = function () {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('hub.theme', next); localStorage.setItem('phonics.theme', next); } catch (e) {}
+  };
+
+  /* ---------- 渲染課程卡 ---------- */
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  var host = document.getElementById('courses');
+
+  COURSES.forEach(function (c) {
+    var prog = null;
+    if (c.progressKey && c.readProgress) {
+      try {
+        var raw = localStorage.getItem(c.progressKey);
+        if (raw) prog = c.readProgress(JSON.parse(raw));
+      } catch (e) { prog = null; }
+    }
+
+    var a = document.createElement('a');
+    a.className = 'course';
+    a.href = c.href;
+
+    a.innerHTML =
+      '<div class="course__icon">' + c.icon + '</div>' +
+      '<div class="course__body">' +
+        '<div class="course__tag">' + esc(c.tagline) + '</div>' +
+        '<h2 class="course__t">' + esc(c.title) + '</h2>' +
+        '<p class="course__d">' + esc(c.desc) + '</p>' +
+        '<div class="chips">' +
+          c.meta.map(function (m) { return '<span class="chip">' + esc(m) + '</span>'; }).join('') +
+        '</div>' +
+        (prog && prog.started
+          ? '<div class="prog">' +
+              '<div class="prog__row"><span>' + esc(prog.label) + '</span><span>' + prog.pct + '%</span></div>' +
+              '<div class="bar"><div class="bar__fill" style="width:' + prog.pct + '%"></div></div>' +
+            '</div>'
+          : '') +
+        '<div class="course__go">' +
+          (prog && prog.started ? '繼續學習' : '開始上課，先做 30 分鐘診斷') + ' →</div>' +
+      '</div>';
+
+    host.appendChild(a);
+  });
+
+  /* 未來課程的佔位。有新課就從 COURSES 加，這張卡自己會留在最後 */
+  var soon = document.createElement('div');
+  soon.className = 'course course--soon';
+  soon.innerHTML =
+    '<div class="course__icon">➕</div>' +
+    '<div class="course__body">' +
+      '<div class="course__tag">規劃中</div>' +
+      '<h2 class="course__t">更多課程</h2>' +
+      '<p class="course__d">目前只有拼讀教室一門。之後新增的課程會直接出現在這裡，' +
+        '共用同一套診斷、錯誤歸因與間隔複習的架構。</p>' +
+    '</div>';
+  host.appendChild(soon);
+})();
+</script>
+</body>
+</html>

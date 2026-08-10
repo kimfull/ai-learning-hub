@@ -1,0 +1,19 @@
+# 相依套件
+node_modules/
+
+# Cloudflare Wrangler
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# 本機個人設定（每個人的允許清單不同）
+.claude/settings.local.json
+
+# 系統檔
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 記錄檔
+*.log
+npm-debug.log*

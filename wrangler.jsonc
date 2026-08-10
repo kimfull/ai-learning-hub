@@ -1,0 +1,16 @@
+{
+  // Cloudflare Workers 靜態網站設定。
+  // 這個專案沒有後端程式碼，只有靜態檔案，所以用 assets-only Worker：
+  // 不需要 main script，Cloudflare 直接從邊緣節點送出檔案。
+  "name": "ai-learning-hub",
+  "compatibility_date": "2026-08-10",
+  "assets": {
+    // 網站根目錄＝ repo 根目錄，所以 / 是學習中心首頁、
+    // /English-Phonics/ 是拼讀課程。哪些檔案不要上傳寫在 .assetsignore。
+    "directory": "./",
+    "not_found_handling": "404-page"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

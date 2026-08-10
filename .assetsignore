@@ -1,0 +1,11 @@
+# 這些檔案不要上傳到 Cloudflare（語法同 .gitignore）
+# 只有網站真正需要的 html / css / js 會被送上去。
+.claude
+.git
+.wrangler
+node_modules
+wrangler.jsonc
+.assetsignore
+.gitignore
+*.md
+docs

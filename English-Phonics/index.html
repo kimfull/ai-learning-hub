@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+<meta name="theme-color" content="#f5f5f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+<meta name="description" content="專為中文母語成人設計的英文自然拼讀（Phonics）課程：見字能讀、聽音能寫。">
+<title>Phonics 拼讀教室</title>
+<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>">
+</head>
+<body>
+
+<header class="appbar" id="appbar">
+  <button class="appbar__back" id="btnBack" aria-label="返回" hidden>‹</button>
+  <div class="appbar__title" id="appTitle">Phonics 拼讀教室</div>
+  <button class="appbar__act" id="btnTheme" aria-label="切換深淺色">◐</button>
+</header>
+
+<main class="view" id="view" tabindex="-1"></main>
+
+<nav class="tabbar" id="tabbar" role="navigation" aria-label="主選單">
+  <button class="tab" data-route="home"><span class="tab__i">🏠</span><span class="tab__t">首頁</span></button>
+  <button class="tab" data-route="levels"><span class="tab__i">📚</span><span class="tab__t">課程</span></button>
+  <button class="tab" data-route="drill"><span class="tab__i">🎯</span><span class="tab__t">複習</span></button>
+  <button class="tab" data-route="progress"><span class="tab__i">📈</span><span class="tab__t">進度</span></button>
+  <button class="tab" data-route="resources"><span class="tab__i">🔗</span><span class="tab__t">資源</span></button>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ?v= 是版本戳記：改過程式碼就把數字加一，讓瀏覽器不要用舊的快取 -->
+<script src="js/speech.js?v=3"></script>
+<script src="js/storage.js?v=3"></script>
+<script src="js/data/phonemes.js?v=3"></script>
+<script src="js/data/words.js?v=3"></script>
+<script src="js/data/resources.js?v=3"></script>
+<script src="js/data/curriculum.js?v=3"></script>
+<script src="js/data/lessons-l0.js?v=3"></script>
+<script src="js/data/lessons-l1.js?v=3"></script>
+<script src="js/data/lessons-l2.js?v=3"></script>
+<script src="js/data/lessons-l3.js?v=3"></script>
+<script src="js/data/lessons-l4.js?v=3"></script>
+<script src="js/data/lessons-l5.js?v=3"></script>
+<script src="js/data/lessons-l6.js?v=3"></script>
+<script src="js/data/lessons-l7.js?v=3"></script>
+<script src="js/data/lessons-l8.js?v=3"></script>
+<script src="js/data/lessons-l9.js?v=3"></script>
+<script src="js/data/lessons-l10.js?v=3"></script>
+<script src="js/exercises.js?v=3"></script>
+<script src="js/diagnose.js?v=3"></script>
+<script src="js/srs.js?v=3"></script>
+<script src="js/app.js?v=3"></script>
+</body>
+</html>
