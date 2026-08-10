@@ -133,15 +133,19 @@ a.course:active { transform: scale(.99); }
 .bar-track, .bar { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
 .bar__fill { height: 100%; background: var(--text); border-radius: 999px; }
 
-/* ---------- Note grid ---------- */
+/* ---------- Note grid ----------
+   刻意不做成卡片：卡片外觀（白底＋陰影＋圓角）在這個頁面代表
+   「可以點進去的課程」。說明文字用純排版，讀者一眼就知道兩者不同類。 */
 .note { margin-top: 44px; }
-.grid { display: grid; gap: 12px; }
-.cell {
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--r-card); padding: 20px; box-shadow: var(--shadow);
+.grid {
+  display: grid;
+  row-gap: 22px; column-gap: 32px;
 }
-.cell__h { font-weight: 600; font-size: 17px; margin-bottom: 6px; letter-spacing: -.2px; }
-.cell p { font-size: 15.5px; color: var(--text-2); line-height: 1.6; margin: 0; }
+.cell { background: none; border: 0; box-shadow: none; padding: 0; }
+.cell__h {
+  font-weight: 600; font-size: 17px; margin-bottom: 4px; letter-spacing: -.2px;
+}
+.cell p { font-size: 16px; color: var(--text-2); line-height: 1.6; margin: 0; }
 
 /* ---------- Foot ---------- */
 .foot {
