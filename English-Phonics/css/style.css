@@ -202,10 +202,21 @@ a { color: var(--text); text-underline-offset: 4px; text-decoration-thickness: 1
 .btn:active { transform: scale(.98); }
 .btn--primary { background: var(--brand); color: var(--brand-ink); border-color: transparent; }
 .btn--ghost   { background: transparent; border-color: var(--line); }
-.btn--block   { display: flex; width: 100%; }
 .btn--lg      { min-height: 60px; font-size: 18px; font-weight: 500; }
 .btn--sm      { min-height: 40px; padding: 0 14px; font-size: 14px; }
 .btn:disabled { opacity: .35; cursor: not-allowed; }
+
+/* 動作區寬度上限。
+   容器是 640px，全寬按鈕在桌機上會變成 584px 寬、只裝 6 個字——
+   又難看又難點（滑鼠要移動的距離變長）。420px 是舒適上限：
+   手機 375px 時仍然接近滿版（343px），桌機才會被收住並置中。 */
+.btn--block, .btn-row, .input {
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btn--block { display: flex; width: 100%; }
+.input      { display: block; }
 .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
 .btn-row > .btn { flex: 1 1 auto; }
 
