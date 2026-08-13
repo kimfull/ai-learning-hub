@@ -6,10 +6,13 @@
   "compatibility_date": "2026-08-10",
   // 自訂網域。kimfull.com 的 DNS 在同一個 Cloudflare 帳號下，
   // 所以 deploy 時會自動建立 DNS 記錄並簽發憑證，不用手動設定。
-  // workers.dev 的網址仍然有效，兩個都指向同一個部署。
   "routes": [
     { "pattern": "abc.kimfull.com", "custom_domain": true }
   ],
+  // 一旦設定了 routes，Cloudflare 預設會把 workers.dev 關掉。
+  // 這裡明確打開，讓 ai-learning-hub.kimfull.workers.dev 繼續可用——
+  // 自訂網域萬一出問題時還有備援，先前分享出去的連結也不會壞。
+  "workers_dev": true,
   "assets": {
     // 網站根目錄＝ repo 根目錄，所以 / 是學習中心首頁、
     // /English-Phonics/ 是拼讀課程。哪些檔案不要上傳寫在 .assetsignore。
