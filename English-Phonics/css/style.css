@@ -108,7 +108,9 @@ body {
 .appbar {
   position: fixed; inset: 0 0 auto 0; z-index: 40;
   height: calc(var(--appbar-h) + env(safe-area-inset-top));
-  padding: env(safe-area-inset-top) 10px 0;
+  /* 背景要全寬（才蓋得住底下捲動的內容），但標題與按鈕要對齊 640px 內容區。
+     用 padding 把中間撐開，桌機上才不會標題貼最左、齒輪貼最右。 */
+  padding: env(safe-area-inset-top) max(10px, calc((100% - 640px) / 2)) 0;
   display: flex; align-items: center; gap: 4px;
   background: color-mix(in srgb, var(--canvas) 86%, transparent);
   backdrop-filter: saturate(180%) blur(14px);
@@ -142,7 +144,9 @@ body {
   position: fixed; inset: auto 0 0 0; z-index: 40;
   display: grid; grid-template-columns: repeat(5, 1fr);
   height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
-  padding-bottom: env(safe-area-inset-bottom);
+  /* 同 appbar：背景全寬，但五個 tab 收在 640px 內。
+     不然桌機上每個 tab 會被撐到 200px 以上，滑鼠要橫跨整個螢幕才點得到。 */
+  padding: 0 max(0px, calc((100% - 640px) / 2)) env(safe-area-inset-bottom);
   background: color-mix(in srgb, var(--canvas) 92%, transparent);
   backdrop-filter: saturate(180%) blur(14px);
   border-top: 1px solid var(--line);
