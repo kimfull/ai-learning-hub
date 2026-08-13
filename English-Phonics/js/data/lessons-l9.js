@@ -40,7 +40,7 @@
           '· reason 的 re 不是字首（不是 re + ason）<br>' +
           '· uncle 的 un 不是字首<br>' +
           '判斷法：拆掉之後剩下的部分是不是有意義的字根？',
-    res: ['etymonline', 'membean-roots'],
+    res: ['etymonline'],
     ex: [
       { type: 'rule-pick', section: '拆詞素', prompt: '<b>unhappy</b> 由幾個詞素組成？',
         word: 'unhappy', options: ['1 個', '2 個', '3 個'], answer: 1, rule: 'morpheme',
@@ -254,7 +254,7 @@
           '· vert / vers（convert / conversion）<br>' +
           '· duc / duct（produce / production）<br>' +
           '認得變形，才不會錯過。',
-    res: ['etymonline', 'membean-roots'],
+    res: ['etymonline'],
     ex: [
       { type: 'rule-pick', section: '字根意思', prompt: '<b>spect</b> 是什麼意思？',
         options: ['說', '看', '寫', '拉'], answer: 1, rule: 'root',

@@ -69,6 +69,82 @@
 
   function whenReady(fn) { ready ? fn() : queue.push(fn); }
 
+  /* ---------- 預錄音檔 ----------
+     為什麼需要：Web Speech API 依賴使用者裝置「剛好裝了英語語音包」。
+     純繁中系統的手機可能完全沒有英語語音，這時瀏覽器會靜音，
+     或更糟——用中文語音去唸英文。學拼讀的人聽到那種發音等於學錯。
+     所以核心字詞全部預先錄好放進網站，TTS 只當備援。 */
+
+  var audioIndex = null;    // 小寫單字 -> true
+  var current = null;       // 目前正在播的 Audio，切題時要停掉
+
+  function buildIndex() {
+    if (audioIndex || !global.AUDIO) return;
+    audioIndex = {};
+    (global.AUDIO.words || []).forEach(function (w) { audioIndex[w.toLowerCase()] = true; });
+  }
+
+  /** 查這段文字有沒有預錄音檔，有的話回傳網址 */
+  function fileFor(text) {
+    if (!global.AUDIO) return null;
+    buildIndex();
+    var t = String(text == null ? '' : text).trim();
+    if (!t) return null;
+
+    var S = global.AUDIO.sentences || {};
+    if (S[t]) return global.AUDIO.base + 's/' + S[t] + '.mp3';
+
+    var w = t.toLowerCase();
+    if (audioIndex[w]) return global.AUDIO.base + 'w/' + w.replace(/[^a-z0-9]/g, '') + '.mp3';
+    return null;
+  }
+
+  function fileForPhoneme(id) {
+    if (!global.AUDIO || !id) return null;
+    var list = global.AUDIO.phonemes || [];
+    return list.indexOf(id) !== -1 ? global.AUDIO.base + 'p/' + id + '.mp3' : null;
+  }
+
+  /**
+   * 播預錄音檔。播完 resolve(true)；檔案不存在或播不出來 resolve(false)，
+   * 由呼叫端決定要不要退回 TTS。
+   */
+  function playFile(url, rate) {
+    return new Promise(function (resolve) {
+      /* 換題或連續點擊時，先把上一段停掉，不然會兩個聲音疊在一起 */
+      stopFile();
+      if (synth) { try { synth.cancel(); } catch (e) {} }
+      var a;
+      try { a = new Audio(url); } catch (e) { resolve(false); return; }
+      current = a;
+      /* 慢速時保持原音高，不然會變成卡通聲 */
+      a.preservesPitch = true;
+      a.mozPreservesPitch = true;
+      a.webkitPreservesPitch = true;
+      a.playbackRate = Math.min(2, Math.max(0.5, rate || 1));
+      var settled = false;
+      function done(ok) {
+        if (settled) return;
+        settled = true;
+        if (current === a) current = null;
+        resolve(ok);
+      }
+      a.onended = function () { done(true); };
+      a.onerror = function () { done(false); };
+      var p = a.play();
+      if (p && p.catch) p.catch(function () { done(false); });
+      /* 安全網：某些瀏覽器在背景分頁不會觸發 onended */
+      setTimeout(function () { done(true); }, 12000);
+    });
+  }
+
+  function stopFile() {
+    if (current) {
+      try { current.pause(); current.onended = current.onerror = null; } catch (e) {}
+      current = null;
+    }
+  }
+
   /** 核心播放；回傳 Promise，播完才 resolve */
   function say(text, opts) {
     opts = opts || {};
@@ -114,23 +190,52 @@
       try { localStorage.setItem('phonics.rate', String(r)); } catch (e) {}
     },
 
-    stop: function () { if (synth) { try { synth.cancel(); } catch (e) {} } },
+    stop: function () {
+      stopFile();
+      if (synth) { try { synth.cancel(); } catch (e) {} }
+    },
 
-    /** 唸一個英文單字或句子 */
-    word: function (w, opts) { return say(w, opts); },
-
-    /** 慢速唸（用於示範口型與拆音） */
-    slow: function (w) { return say(w, { rate: Math.max(0.45, Speech.rate - 0.35) }); },
+    /** 這段文字有沒有預錄音檔（UI 想標示「已錄音」時可用） */
+    hasFile: function (text) { return !!fileFor(text); },
 
     /**
-     * 唸單一音素。傳入 phonemes.js 的音素物件或 tts 字串。
-     * 子音會刻意壓低音量尾巴，避免加上多餘的 "uh"（schwa）——
-     * 這是中文母語者最常見的發音錯誤來源（把 /b/ 唸成「不」）。
+     * 唸一個英文單字或句子。
+     * 優先播預錄音檔；檔案不存在或播放失敗，才退回瀏覽器即時合成。
+     */
+    word: function (w, opts) {
+      opts = opts || {};
+      var url = fileFor(w);
+      if (!url) return say(w, opts);
+      /* 錄音時 SAPI 已經設成稍慢（Rate=-1，約等於 0.9 倍速），
+         所以這裡把使用者設定的語速換算成相對倍率 */
+      var rate = (opts.rate != null ? opts.rate : Speech.rate) / 0.9;
+      return playFile(url, rate).then(function (ok) { return ok ? true : say(w, opts); });
+    },
+
+    /** 慢速唸（示範口型與拆音用） */
+    slow: function (w) {
+      var url = fileFor(w);
+      var ttsRate = Math.max(0.45, Speech.rate - 0.35);
+      if (!url) return say(w, { rate: ttsRate });
+      return playFile(url, 0.65).then(function (ok) {
+        return ok ? true : say(w, { rate: ttsRate });
+      });
+    },
+
+    /**
+     * 唸單一音素。傳入 phonemes.js 的音素物件，或直接給一段近似拼法。
+     * 注意音素物件要用 iso（孤立音的近似拼法，例如 /b/ → "buh"），
+     * 不能用 sym——那是 IPA 符號，唸出來會變成「斜線 b 斜線」。
      */
     phoneme: function (p) {
-      var t = typeof p === 'string' ? p : (p && (p.tts || p.sym)) || '';
-      var rate = (p && p.ttsRate) || 0.55;
-      return say(t, { rate: rate });
+      var isObj = p && typeof p === 'object';
+      var url = isObj ? fileForPhoneme(p.id) : null;
+      var text = isObj ? (p.iso || p.key || '') : String(p || '');
+      var ttsRate = 0.6;
+      if (!url) return text ? say(text, { rate: ttsRate }) : Promise.resolve(false);
+      return playFile(url, 0.9).then(function (ok) {
+        return ok ? true : (text ? say(text, { rate: ttsRate }) : false);
+      });
     },
 
     /** 逐字母拼讀（字母名稱，不是字母音） */

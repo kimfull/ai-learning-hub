@@ -255,6 +255,22 @@ a { color: var(--text); text-underline-offset: 4px; text-decoration-thickness: 1
 .g-s { color: var(--silent); text-decoration: line-through .06em; opacity: .65; }
 .g-r { color: var(--vowel); border-bottom: 3px solid var(--cons); }
 
+/* ---------- 口腔剖面圖 ---------- */
+.mouthbox {
+  margin: 16px 0; padding: 16px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-card); box-shadow: var(--shadow);
+}
+/* 圖比例約 1.18:1，不設上限的話在桌機會撐到 550px 高，佔掉整個畫面 */
+.mouth { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; }
+.mouth__tag { font-size: 11px; font-family: var(--font-ui); font-weight: 500; }
+.mouthbox__steps {
+  margin: 12px 0 0; padding-left: 22px;
+  font-size: 15.5px; line-height: 1.65; color: var(--text-2);
+}
+.mouthbox__steps li { margin-bottom: 3px; }
+.mouthbox__steps li:last-child { margin-bottom: 0; color: var(--text); font-weight: 500; }
+
 /* ---------- Phoneme tiles / Elkonin boxes ---------- */
 .tiles { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 18px 0; }
 .tile {

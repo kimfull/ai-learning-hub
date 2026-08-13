@@ -713,6 +713,19 @@
     row.appendChild(b1); row.appendChild(b2);
     host.appendChild(row);
 
+    /* 口腔剖面圖：純文字說「舌尖抵上齒齦」對沒學過語音學的人沒用，
+       他不知道上齒齦在哪。一張圖就解決了。 */
+    if (global.Mouth && global.Mouth.has(p.id)) {
+      var fig = $('<figure class="mouthbox"></figure>');
+      fig.innerHTML = global.Mouth.svg(p.id);
+      var steps = global.Mouth.steps(p.id);
+      if (steps.length) {
+        fig.appendChild($('<ol class="mouthbox__steps">' +
+          steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>'));
+      }
+      host.appendChild(fig);
+    }
+
     host.appendChild($('<div class="rule"><div class="rule__h">怎麼發這個音</div><div>' + esc(p.zh) + '</div></div>'));
     if (p.trap) {
       host.appendChild($('<div class="fb fb--warn"><div class="fb__t">⚠️ 中文母語者的陷阱</div>' +

@@ -63,14 +63,6 @@
       zhNote:'教材原本設計給小學生，但拼讀順序對成人一樣適用；忽略卡通插圖即可。'
     },
     {
-      id:'ufli-overview', type:'read', levels:[0], mins:12,
-      title:'UFLI Foundations 課程總覽（PDF，5 頁）',
-      url:'https://ufli.education.ufl.edu/wp-content/uploads/2022/06/UFLI-Foundations-Overview-5pg.pdf',
-      what:'用 5 頁說明「系統性 phonics 應該長什麼樣」：八步驟教學流程。',
-      how:'開始 Level 1 之前讀一次，理解為什麼每課都要照同樣順序走。',
-      after:'不用練習，讀懂即可。'
-    },
-    {
       id:'starfall', type:'play', levels:[2,3,4], mins:10,
       title:'Starfall Learn to Read',
       url:'https://www.starfall.com/h/ltr-classic/',
@@ -167,14 +159,6 @@
       how:'學到 Level 9 時，每個新字根查一次來源，記住那個「故事」。',
       after:'用該字根造 5 個字，唸出來並拆音節。'
     },
-    {
-      id:'membean-roots', type:'read', levels:[9], mins:8,
-      title:'Membean 字根清單',
-      url:'https://membean.com/root-words',
-      what:'常見拉丁／希臘字根的整理清單與例字。',
-      how:'一次只看 3 個字根，不要貪多。',
-      after:'把該字根的例字放進本站的多音節解碼練習。'
-    }
   ];
 
   global.RESOURCES = {
